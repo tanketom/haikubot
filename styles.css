@@ -13,9 +13,11 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 400px; /* Fixed width */
+    width: 80%; /* Minimum 80% of screen width */
+    max-width: 800px; /* Maximum width for larger screens */
     height: 300px; /* Fixed height */
     overflow: hidden;
+    margin: 0 auto; /* Center align */
 }
 
 #generate-button {
@@ -64,4 +66,18 @@ body {
 @keyframes blink-caret {
     from, to { background-color: transparent; }
     50% { background-color: black; }
+}
+
+@media (max-width: 600px) {
+    #haiku-container {
+        width: 90%; /* Adjust width for smaller screens */
+    }
+
+    #haiku {
+        font-size: 2em; /* Adjust font size for smaller screens */
+    }
+
+    #generate-button {
+        font-size: 1em; /* Adjust button size for smaller screens */
+    }
 }
