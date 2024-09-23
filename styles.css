@@ -10,10 +10,11 @@ body {
 }
 
 #generate-button {
-    position: absolute;
-    top: -40px; /* Adjust as needed */
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 #haiku {
@@ -22,6 +23,7 @@ body {
     display: inline-block;
     white-space: pre-wrap;
     overflow: hidden;
+    text-align: left;
 }
 
 #caret {
