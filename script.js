@@ -16,38 +16,6 @@ function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function typeText(element, text, speed) {
-    let mistypeChance = 0.2; // 20% chance of mistype
-    let mistyped = false;
-
-    for (let i = 0; i < text.length; i++) {
-        if (Math.random() < mistypeChance && !mistyped && text[i] !== '<' && text[i] !== '>') {
-            // Mistype
-            let wrongChar = String.fromCharCode(text.charCodeAt(i) + 1);
-            element.innerHTML += wrongChar;
-            await sleep(1000); // Pause for a second
-            // Backspace
-            element.innerHTML = element.innerHTML.slice(0, -1);
-            await sleep(speed);
-            mistyped = true;
-        }
-        element.innerHTML += text[i];
-        await sleep(speed);
-        mistyped = false;
-    }
-}
-
-async function backspaceText(element, speed) {
-    while (element.innerHTML.length > 0) {
-        element.innerHTML = element.innerHTML.slice(0, -1);
-        await sleep(speed);
-    }
-}
-
 async function generateHaiku() {
     const haikuLines = await fetchHaikuLines();
     if (!haikuLines) {
@@ -62,15 +30,6 @@ async function generateHaiku() {
     const line2 = getRandomElement(sevenSyllablePhrases);
     const line3 = getRandomElement(fiveSyllablePhrases);
 
-    const haiku = `${line1}\n${line2}\n${line3}`;
-    const haikuElement = document.getElementById('haiku');
-    const caretElement = document.getElementById('caret');
-
-    // Backspace existing haiku if any
-    await backspaceText(haikuElement, 50);
-
-    // Type new haiku
-    caretElement.style.display = 'inline-block'; // Show caret
-    await typeText(haikuElement, haiku, 15000 / 60); // 40 words per minute
-    caretElement.style.display = 'none'; // Hide caret after typing
+    const haiku = `${line1}<br>${line2}<br>${line3}`;
+    document.getElementById('haiku').innerHTML = haiku;
 }
