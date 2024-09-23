@@ -20,6 +20,40 @@ function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+const keyboardNeighbors = {
+    'a': ['q', 'w', 's', 'z'],
+    'b': ['v', 'g', 'h', 'n'],
+    'c': ['x', 'd', 'f', 'v'],
+    'd': ['s', 'e', 'r', 'f', 'c', 'x'],
+    'e': ['w', 's', 'd', 'r'],
+    'f': ['d', 'r', 't', 'g', 'v', 'c'],
+    'g': ['f', 't', 'y', 'h', 'b', 'v'],
+    'h': ['g', 'y', 'u', 'j', 'n', 'b'],
+    'i': ['u', 'j', 'k', 'o'],
+    'j': ['h', 'u', 'i', 'k', 'm', 'n'],
+    'k': ['j', 'i', 'o', 'l', 'm'],
+    'l': ['k', 'o', 'p'],
+    'm': ['n', 'j', 'k'],
+    'n': ['b', 'h', 'j', 'm'],
+    'o': ['i', 'k', 'l', 'p'],
+    'p': ['o', 'l'],
+    'q': ['a', 'w'],
+    'r': ['e', 'd', 'f', 't'],
+    's': ['a', 'w', 'e', 'd', 'x', 'z'],
+    't': ['r', 'f', 'g', 'y'],
+    'u': ['y', 'h', 'j', 'i'],
+    'v': ['c', 'f', 'g', 'b'],
+    'w': ['q', 'a', 's', 'e'],
+    'x': ['z', 's', 'd', 'c'],
+    'y': ['t', 'g', 'h', 'u'],
+    'z': ['a', 's', 'x']
+};
+
+function getNeighboringKey(char) {
+    const neighbors = keyboardNeighbors[char.toLowerCase()];
+    return neighbors ? getRandomElement(neighbors) : char;
+}
+
 async function typeWriterEffect(element, text, speed) {
     element.innerHTML = '';
     let cursor = document.createElement('span');
@@ -29,8 +63,8 @@ async function typeWriterEffect(element, text, speed) {
     for (let i = 0; i < text.length; i++) {
         let char = text[i];
         if (Math.random() < 0.25) {
-            // Mistype a letter
-            let wrongChar = String.fromCharCode(char.charCodeAt(0) + 1);
+            // Mistype a letter with a neighboring key
+            let wrongChar = getNeighboringKey(char);
             cursor.insertAdjacentText('beforebegin', wrongChar);
             await sleep(250); // Pause on mistype
             // Backspace
