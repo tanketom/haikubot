@@ -1,3 +1,17 @@
+async function fetchHaikuLines() {
+    try {
+        const response = await fetch('haikuLines.json');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch haiku lines:', error);
+        return null;
+    }
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
