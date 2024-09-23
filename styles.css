@@ -23,7 +23,7 @@ body {
     display: inline-block;
     white-space: pre-wrap;
     overflow: hidden;
-    text-align: left;
+    text-align: center; /* Center align text */
 }
 
 #caret {

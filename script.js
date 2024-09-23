@@ -32,7 +32,7 @@ async function typeWriterEffect(element, text, speed) {
             // Mistype a letter
             let wrongChar = String.fromCharCode(char.charCodeAt(0) + 1);
             cursor.insertAdjacentText('beforebegin', wrongChar);
-            await sleep(speed);
+            await sleep(250); // Pause on mistype
             // Backspace
             cursor.previousSibling.remove();
             await sleep(speed);
@@ -42,10 +42,24 @@ async function typeWriterEffect(element, text, speed) {
     }
 }
 
+async function backspaceEffect(element, speed) {
+    let text = element.innerText;
+    while (text.length > 0) {
+        text = text.slice(0, -1);
+        element.innerText = text;
+        await sleep(speed);
+    }
+}
+
 async function generateHaiku() {
+    const haikuElement = document.getElementById('haiku');
+    if (haikuElement.innerText.trim() !== '') {
+        await backspaceEffect(haikuElement, 2000 / 30); // Backspace existing poem
+    }
+
     const haikuLines = await fetchHaikuLines();
     if (!haikuLines) {
-        document.getElementById('haiku').innerHTML = 'Failed to load haiku lines. Please try again later.';
+        haikuElement.innerHTML = 'Failed to load haiku lines. Please try again later.';
         return;
     }
 
@@ -57,7 +71,6 @@ async function generateHaiku() {
     const line3 = getRandomElement(fiveSyllablePhrases);
 
     const haiku = `${line1}\n${line2}\n${line3}`;
-    const haikuElement = document.getElementById('haiku');
     await typeWriterEffect(haikuElement, haiku, 2000 / 30); // 30 words per minute
 }
 
