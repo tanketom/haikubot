@@ -62,29 +62,50 @@ async function typeWriterEffect(element, text, speed) {
 
     let word = '';
     let mistypedSpan = null;
+    let mistyped = false;
 
     for (let i = 0; i < text.length; i++) {
         let char = text[i];
         word += char;
 
         if (Math.random() < 0.25 && char !== ' ' && char !== '\n') {
-            // Mistype a letter with a neighboring key
-            let wrongChar = getNeighboringKey(char);
-            mistypedSpan = document.createElement('span');
-            mistypedSpan.className = 'mistyped';
-            mistypedSpan.textContent = word.slice(0, -1) + wrongChar;
-            cursor.insertAdjacentElement('beforebegin', mistypedSpan);
-            await sleep(250); // Pause on mistype
-            // Backspace
-            mistypedSpan.remove();
+            // Decide whether to fix immediately or delay correction
+            if (Math.random() < 0.5) {
+                // Immediate correction
+                let wrongChar = getNeighboringKey(char);
+                cursor.insertAdjacentText('beforebegin', wrongChar);
+                await sleep(250); // Pause on mistype
+                cursor.previousSibling.remove();
+                await sleep(speed);
+            } else {
+                // Delayed correction
+                let wrongChar = getNeighboringKey(char);
+                mistypedSpan = document.createElement('span');
+                mistypedSpan.className = 'mistyped';
+                mistypedSpan.textContent = word.slice(0, -1) + wrongChar;
+                cursor.insertAdjacentElement('beforebegin', mistypedSpan);
+                mistyped = true;
+                word = word.slice(0, -1) + wrongChar;
+            }
+        } else {
+            cursor.insertAdjacentText('beforebegin', char);
             await sleep(speed);
-            word = word.slice(0, -1); // Remove the wrong character from the word
         }
 
-        cursor.insertAdjacentText('beforebegin', char);
-        await sleep(speed);
-
         if (char === ' ' || char === '\n') {
+            if (mistyped) {
+                // Correct the mistyped word
+                await sleep(250); // Pause before correction
+                for (let j = 0; j < word.length; j++) {
+                    cursor.previousSibling.remove();
+                    await sleep(speed);
+                }
+                for (let j = 0; j < word.length; j++) {
+                    cursor.insertAdjacentText('beforebegin', word[j]);
+                    await sleep(speed);
+                }
+                mistyped = false;
+            }
             word = ''; // Reset word on space or newline
         }
     }
