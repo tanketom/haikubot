@@ -65,10 +65,13 @@ async function typeWriterEffect(element, text, speed) {
         if (Math.random() < 0.25) {
             // Mistype a letter with a neighboring key
             let wrongChar = getNeighboringKey(char);
-            cursor.insertAdjacentText('beforebegin', wrongChar);
+            let mistypedSpan = document.createElement('span');
+            mistypedSpan.className = 'mistyped';
+            mistypedSpan.textContent = wrongChar;
+            cursor.insertAdjacentElement('beforebegin', mistypedSpan);
             await sleep(250); // Pause on mistype
             // Backspace
-            cursor.previousSibling.remove();
+            mistypedSpan.remove();
             await sleep(speed);
         }
         cursor.insertAdjacentText('beforebegin', char);

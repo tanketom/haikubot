@@ -6,11 +6,6 @@ body {
     color: #333;
 }
 
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-}
-
 #haiku-container {
     display: inline-block;
     position: relative;
@@ -18,12 +13,15 @@ h1 {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Fixed width */
+    height: 300px; /* Fixed height */
+    overflow: hidden;
 }
 
 #generate-button {
     display: block;
     margin: 20px auto;
-    padding: 15px 30px;
+    padding: 10px 20px;
     font-size: 1.2em;
     cursor: pointer;
     background-color: #007BFF;
@@ -38,7 +36,7 @@ h1 {
 }
 
 #haiku {
-    font-size: 2em;
+    font-size: 2.5em; /* Larger text */
     margin-top: 20px;
     display: inline-block;
     white-space: pre-wrap;
@@ -46,6 +44,7 @@ h1 {
     text-align: center;
     position: relative;
     line-height: 1.5;
+    height: 100%; /* Ensure it fills the container */
 }
 
 #caret {
@@ -56,6 +55,10 @@ h1 {
     vertical-align: bottom;
     animation: blink-caret 0.75s step-end infinite;
     position: absolute;
+}
+
+.mistyped {
+    text-decoration: underline wavy red;
 }
 
 @keyframes blink-caret {
