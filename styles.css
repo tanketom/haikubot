@@ -4,17 +4,34 @@ body {
     margin-top: 50px;
 }
 
+#haiku-container {
+    display: inline-block;
+    position: relative;
+}
+
+#generate-button {
+    position: absolute;
+    top: -40px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 #haiku {
     font-size: 24px;
     margin-top: 20px;
     display: inline-block;
-    border-right: 2px solid black;
-    white-space: nowrap;
+    white-space: pre-wrap;
     overflow: hidden;
+}
+
+#caret {
+    display: inline-block;
+    width: 2px;
+    background-color: black;
     animation: blink-caret 0.75s step-end infinite;
 }
 
 @keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50% { border-color: black; }
+    from, to { background-color: transparent; }
+    50% { background-color: black; }
 }

@@ -8,8 +8,10 @@
 </head>
 <body>
     <h1>Random Haiku Generator</h1>
-    <button onclick="generateHaiku()">Generate Haiku</button>
-    <div id="haiku"></div>
+    <div id="haiku-container">
+        <button id="generate-button" onclick="generateHaiku()">Generate Haiku</button>
+        <div id="haiku"><div id="caret"></div></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
