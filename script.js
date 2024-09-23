@@ -25,7 +25,7 @@ async function typeText(element, text, speed) {
     let mistyped = false;
 
     for (let i = 0; i < text.length; i++) {
-        if (Math.random() < mistypeChance && !mistyped) {
+        if (Math.random() < mistypeChance && !mistyped && text[i] !== '<' && text[i] !== '>') {
             // Mistype
             let wrongChar = String.fromCharCode(text.charCodeAt(i) + 1);
             element.innerHTML += wrongChar;
