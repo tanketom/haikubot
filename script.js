@@ -109,6 +109,19 @@ async function typeWriterEffect(element, text, speed) {
             word = ''; // Reset word on space or newline
         }
     }
+
+    // Final correction if the last word was mistyped
+    if (mistyped) {
+        await sleep(250); // Pause before correction
+        for (let j = 0; j < word.length; j++) {
+            cursor.previousSibling.remove();
+            await sleep(speed);
+        }
+        for (let j = 0; j < word.length; j++) {
+            cursor.insertAdjacentText('beforebegin', word[j]);
+            await sleep(speed);
+        }
+    }
 }
 
 async function backspaceEffect(element, speed) {
