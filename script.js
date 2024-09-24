@@ -86,14 +86,15 @@ async function typeWriterEffect(element, text, speed) {
         if (Math.random() < MISTYPE_PROBABILITY && char !== ' ' && char !== '\n') {
             // Mistype a letter with a neighboring key
             let wrongChar = getNeighboringKey(char);
-            word = word.slice(0, -1) + wrongChar;
-            wordSpan.className = 'mistyped';
-            wordSpan.textContent = word;
+            let mistypedSpan = document.createElement('span');
+            mistypedSpan.className = 'mistyped';
+            mistypedSpan.textContent = wrongChar;
+            wordSpan.appendChild(mistypedSpan);
             await sleep(MISTYPE_PAUSE); // Pause on mistype
             // Backspace
-            word = word.slice(0, -1); // Remove the wrong character from the word
-            wordSpan.textContent = word;
+            mistypedSpan.remove();
             await sleep(speed);
+            word = word.slice(0, -1); // Remove the wrong character from the word
         }
 
         wordSpan.append(char);
