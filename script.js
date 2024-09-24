@@ -2,10 +2,13 @@
 const TYPING_SPEED = 2000 / 27; // Speed for typing effect (milliseconds per character)
 const BACKSPACE_SPEED = 2000 / 40; // Speed for backspace effect (milliseconds per character)
 const MISTYPE_PROBABILITY = 0.25; // Probability of mistyping a character
+const VOWEL_MISTYPE_PROBABILITY = 0.35; // Higher probability for vowels
 const MISTYPE_PAUSE = 400; // Pause duration on mistype (milliseconds)
 
 // Fetch haiku lines from JSON file
 async function fetchHaikuLines() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    loadingIndicator.style.display = 'block';
     try {
         const response = await fetch('haikuLines.json');
         if (!response.ok) {
@@ -16,6 +19,8 @@ async function fetchHaikuLines() {
     } catch (error) {
         console.error('Failed to fetch haiku lines:', error);
         return null;
+    } finally {
+        loadingIndicator.style.display = 'none';
     }
 }
 
@@ -68,7 +73,12 @@ function getNeighboringKey(char) {
     return neighbors ? getRandomElement(neighbors) : char;
 }
 
-// Typewriter effect with mistyping
+// Function to determine if a character is a vowel
+function isVowel(char) {
+    return 'aeiou'.includes(char.toLowerCase());
+}
+
+// Typewriter effect with enhanced mistyping logic
 async function typeWriterEffect(element, text, speed) {
     element.innerHTML = '';
     let cursor = document.createElement('span');
@@ -83,7 +93,9 @@ async function typeWriterEffect(element, text, speed) {
         let char = text[i];
         word += char;
 
-        if (Math.random() < MISTYPE_PROBABILITY && char !== ' ' && char !== '\n') {
+        let mistypeProbability = isVowel(char) ? VOWEL_MISTYPE_PROBABILITY : MISTYPE_PROBABILITY;
+
+        if (Math.random() < mistypeProbability && char !== ' ' && char !== '\n') {
             // Mistype a letter with a neighboring key
             let wrongChar = getNeighboringKey(char);
             let mistypedSpan = document.createElement('span');
