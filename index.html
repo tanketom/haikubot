@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haiku Generator</title>
+    <title>Generate a hiku… haiku</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="haiku-container">
-        <button id="generate-button" onclick="generateHaiku()">Generate a <span class="mistyped">hiku</span></button>
+        <button id="generate-button" aria-label="Generate a haiku" onclick="generateHaiku()">generate a <span class="mistyped">hiku</span></button>
         <div id="haiku" aria-live="polite"><div id="caret"></div></div>
     </div>
-
+    <footer>
+        Internet silliness by <a href="https://twitter.com/tanketom" target="_blank">@tanketom</a>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
