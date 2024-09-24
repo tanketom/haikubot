@@ -1,7 +1,7 @@
 // Configuration variables
-const TYPING_SPEED = 2000 / 25; // Speed for typing effect (milliseconds per character)
+const TYPING_SPEED = 2000 / 27; // Speed for typing effect (milliseconds per character)
 const BACKSPACE_SPEED = 2000 / 40; // Speed for backspace effect (milliseconds per character)
-const MISTYPE_PROBABILITY = 0.22; // Probability of mistyping a character
+const MISTYPE_PROBABILITY = 0.25; // Probability of mistyping a character
 const MISTYPE_PAUSE = 400; // Pause duration on mistype (milliseconds)
 
 // Fetch haiku lines from JSON file
@@ -35,7 +35,7 @@ const keyboardNeighbors = {
     'b': ['v', 'g', 'h', 'n'],
     'c': ['x', 'd', 'f', 'v'],
     'd': ['s', 'e', 'r', 'f', 'c', 'x'],
-    'e': ['w', 's', 'd', 'r'],
+    'e': ['w', 's', 'd', 'r', '3', '4'],
     'f': ['d', 'r', 't', 'g', 'v', 'c'],
     'g': ['f', 't', 'y', 'h', 'b', 'v'],
     'h': ['g', 'y', 'u', 'j', 'n', 'b'],
@@ -46,17 +46,20 @@ const keyboardNeighbors = {
     'm': ['n', 'j', 'k'],
     'n': ['b', 'h', 'j', 'm'],
     'o': ['i', 'k', 'l', 'p'],
-    'p': ['o', 'l'],
-    'q': ['a', 'w'],
-    'r': ['e', 'd', 'f', 't'],
+    'p': ['o', 'l', 'å', 'ø', 'æ', '0', '+'],
+    'q': ['a', 'w', '1'],
+    'r': ['e', 'd', 'f', 't', '4', '5'],
     's': ['a', 'w', 'e', 'd', 'x', 'z'],
     't': ['r', 'f', 'g', 'y'],
     'u': ['y', 'h', 'j', 'i'],
     'v': ['c', 'f', 'g', 'b'],
-    'w': ['q', 'a', 's', 'e'],
+    'w': ['q', 'a', 's', 'e', '2', '3'],
     'x': ['z', 's', 'd', 'c'],
     'y': ['t', 'g', 'h', 'u'],
-    'z': ['a', 's', 'x']
+    'z': ['a', 's', 'x', '<'],
+    'å': ['p', '¨', 'ø', 'æ'],
+    'ø': ['l', 'p', 'æ', '.'],
+    'æ': ['ø', 'å', '@', '-']
 };
 
 // Get a neighboring key for mistyping effect
@@ -108,9 +111,11 @@ async function typeWriterEffect(element, text, speed) {
 // Backspace effect
 async function backspaceEffect(element, speed) {
     let text = element.innerText;
+    const cursor = document.getElementById('caret');
     while (text.length > 0) {
         text = text.slice(0, -1);
         element.innerText = text;
+        element.appendChild(cursor); // Ensure caret is visible
         await sleep(speed);
     }
 }
@@ -118,6 +123,10 @@ async function backspaceEffect(element, speed) {
 // Generate a haiku and display it with typewriter effect
 async function generateHaiku() {
     const haikuElement = document.getElementById('haiku');
+    const cursor = document.createElement('span');
+    cursor.id = 'caret';
+    haikuElement.appendChild(cursor); // Ensure caret is visible before generating poem
+
     if (haikuElement.innerText.trim() !== '') {
         await backspaceEffect(haikuElement, BACKSPACE_SPEED); // Backspace existing poem
     }
