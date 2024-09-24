@@ -92,7 +92,6 @@ async function typeWriterEffect(element, text, speed) {
             await sleep(MISTYPE_PAUSE); // Pause on mistype
             // Backspace
             word = word.slice(0, -1); // Remove the wrong character from the word
-            wordSpan.className = ''; // Remove mistyped class
             wordSpan.textContent = word;
             await sleep(speed);
         }
