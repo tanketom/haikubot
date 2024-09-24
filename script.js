@@ -68,8 +68,9 @@ async function typeWriterEffect(element, text, speed) {
         word += char;
 
         if (Math.random() < 0.25 && char !== ' ' && char !== '\n') {
-            // Mistype a letter with a neighboring key
             let wrongChar = getNeighboringKey(char);
+            let correctText = element.innerHTML.slice(0, -1); // Remove the last correct character
+            element.innerHTML = correctText; // Update the element's innerHTML
             mistypedSpan = document.createElement('span');
             mistypedSpan.className = 'mistyped';
             mistypedSpan.textContent = word.slice(0, -1) + wrongChar;
@@ -79,7 +80,7 @@ async function typeWriterEffect(element, text, speed) {
             mistypedSpan.remove();
             await sleep(speed);
             word = word.slice(0, -1); // Remove the wrong character from the word
-        }
+        }        
 
         cursor.insertAdjacentText('beforebegin', char);
         await sleep(speed);
