@@ -29,39 +29,6 @@ function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Keyboard neighbors for mistyping effect
-const keyboardNeighbors = {
-    'a': ['q', 'w', 's', 'z'],
-    'b': ['v', 'g', 'h', 'n'],
-    'c': ['x', 'd', 'f', 'v'],
-    'd': ['s', 'e', 'r', 'f', 'c', 'x'],
-    'e': ['w', 's', 'd', 'r', '3', '4'],
-    'f': ['d', 'r', 't', 'g', 'v', 'c'],
-    'g': ['f', 't', 'y', 'h', 'b', 'v'],
-    'h': ['g', 'y', 'u', 'j', 'n', 'b'],
-    'i': ['u', 'j', 'k', 'o'],
-    'j': ['h', 'u', 'i', 'k', 'm', 'n'],
-    'k': ['j', 'i', 'o', 'l', 'm'],
-    'l': ['k', 'o', 'p'],
-    'm': ['n', 'j', 'k'],
-    'n': ['b', 'h', 'j', 'm'],
-    'o': ['i', 'k', 'l', 'p'],
-    'p': ['o', 'l', 'å', 'ø', 'æ', '0', '+'],
-    'q': ['a', 'w', '1'],
-    'r': ['e', 'd', 'f', 't', '4', '5'],
-    's': ['a', 'w', 'e', 'd', 'x', 'z'],
-    't': ['r', 'f', 'g', 'y'],
-    'u': ['y', 'h', 'j', 'i'],
-    'v': ['c', 'f', 'g', 'b'],
-    'w': ['q', 'a', 's', 'e', '2', '3'],
-    'x': ['z', 's', 'd', 'c'],
-    'y': ['t', 'g', 'h', 'u'],
-    'z': ['a', 's', 'x', '<'],
-    'å': ['p', '¨', 'ø', 'æ'],
-    'ø': ['l', 'p', 'æ', '.'],
-    'æ': ['ø', 'å', '@', '-']
-};
-
 // Get a neighboring key for mistyping effect
 function getNeighboringKey(char) {
     const neighbors = keyboardNeighbors[char.toLowerCase()];
@@ -69,7 +36,7 @@ function getNeighboringKey(char) {
 }
 
 // Typewriter effect with mistyping
-async function typeWriterEffect(element, text, speed) {
+async function typeWriterEffect(element, text, speed, validWords) {
     element.innerHTML = '';
     let cursor = document.createElement('span');
     cursor.id = 'caret';
@@ -100,10 +67,23 @@ async function typeWriterEffect(element, text, speed) {
         await sleep(speed);
 
         if (char === ' ' || char === '\n') {
+            // Check if the word is valid
+            if (!validWords.includes(word.trim())) {
+                wordSpan.className = 'mistyped';
+            } else {
+                wordSpan.className = '';
+            }
             word = ''; // Reset word on space or newline
             wordSpan = document.createElement('span');
             element.insertBefore(wordSpan, cursor);
         }
+    }
+
+    // Final word check
+    if (!validWords.includes(word.trim())) {
+        wordSpan.className = 'mistyped';
+    } else {
+        wordSpan.className = '';
     }
 }
 
@@ -139,12 +119,14 @@ async function generateHaiku() {
     const fiveSyllablePhrases = haikuLines.fiveSyllablePhrases;
     const sevenSyllablePhrases = haikuLines.sevenSyllablePhrases;
 
+    const validWords = [...fiveSyllablePhrases, ...sevenSyllablePhrases].flatMap(phrase => phrase.split(' '));
+
     const line1 = getRandomElement(fiveSyllablePhrases);
     const line2 = getRandomElement(sevenSyllablePhrases);
     const line3 = getRandomElement(fiveSyllablePhrases);
 
     const haiku = `${line1}\n${line2}\n${line3}`;
-    await typeWriterEffect(haikuElement, haiku, TYPING_SPEED); // Use configurable typing speed
+    await typeWriterEffect(haikuElement, haiku, TYPING_SPEED, validWords); // Use configurable typing speed
 }
 
 // Add event listener to generate haiku on button click
