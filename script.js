@@ -1,8 +1,8 @@
 // Configuration variables
-const TYPING_SPEED = 2000 / 30; // Speed for typing effect (milliseconds per character)
-const BACKSPACE_SPEED = 2000 / 30; // Speed for backspace effect (milliseconds per character)
-const MISTYPE_PROBABILITY = 0.25; // Probability of mistyping a character
-const MISTYPE_PAUSE = 250; // Pause duration on mistype (milliseconds)
+const TYPING_SPEED = 2000 / 25; // Speed for typing effect (milliseconds per character)
+const BACKSPACE_SPEED = 2000 / 40; // Speed for backspace effect (milliseconds per character)
+const MISTYPE_PROBABILITY = 0.22; // Probability of mistyping a character
+const MISTYPE_PAUSE = 400; // Pause duration on mistype (milliseconds)
 
 // Fetch haiku lines from JSON file
 async function fetchHaikuLines() {
@@ -73,7 +73,8 @@ async function typeWriterEffect(element, text, speed) {
     element.appendChild(cursor);
 
     let word = '';
-    let mistypedSpan = null;
+    let wordSpan = document.createElement('span');
+    element.insertBefore(wordSpan, cursor);
 
     for (let i = 0; i < text.length; i++) {
         let char = text[i];
@@ -82,10 +83,10 @@ async function typeWriterEffect(element, text, speed) {
         if (Math.random() < MISTYPE_PROBABILITY && char !== ' ' && char !== '\n') {
             // Mistype a letter with a neighboring key
             let wrongChar = getNeighboringKey(char);
-            mistypedSpan = document.createElement('span');
+            let mistypedSpan = document.createElement('span');
             mistypedSpan.className = 'mistyped';
-            mistypedSpan.textContent = word.slice(0, -1) + wrongChar;
-            cursor.insertAdjacentElement('beforebegin', mistypedSpan);
+            mistypedSpan.textContent = wrongChar;
+            wordSpan.appendChild(mistypedSpan);
             await sleep(MISTYPE_PAUSE); // Pause on mistype
             // Backspace
             mistypedSpan.remove();
@@ -93,11 +94,13 @@ async function typeWriterEffect(element, text, speed) {
             word = word.slice(0, -1); // Remove the wrong character from the word
         }
 
-        cursor.insertAdjacentText('beforebegin', char);
+        wordSpan.append(char);
         await sleep(speed);
 
         if (char === ' ' || char === '\n') {
             word = ''; // Reset word on space or newline
+            wordSpan = document.createElement('span');
+            element.insertBefore(wordSpan, cursor);
         }
     }
 }
