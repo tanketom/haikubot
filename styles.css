@@ -50,22 +50,18 @@ body {
 }
 
 #caret {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background-color: black;
-    vertical-align: bottom;
-    animation: blink-caret 0.75s step-end infinite;
-    position: absolute;
+    border-right: 2px solid black;
+    animation: blink 0.7s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
 }
 
 .mistyped {
     text-decoration: underline wavy red;
-}
-
-@keyframes blink-caret {
-    from, to { background-color: transparent; }
-    50% { background-color: black; }
 }
 
 @media (max-width: 600px) {

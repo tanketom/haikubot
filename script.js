@@ -1,3 +1,10 @@
+// Configuration variables
+const TYPING_SPEED = 2000 / 30; // Speed for typing effect (milliseconds per character)
+const BACKSPACE_SPEED = 2000 / 30; // Speed for backspace effect (milliseconds per character)
+const MISTYPE_PROBABILITY = 0.25; // Probability of mistyping a character
+const MISTYPE_PAUSE = 250; // Pause duration on mistype (milliseconds)
+
+// Fetch haiku lines from JSON file
 async function fetchHaikuLines() {
     try {
         const response = await fetch('haikuLines.json');
@@ -12,14 +19,17 @@ async function fetchHaikuLines() {
     }
 }
 
+// Sleep function
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Get a random element from an array
 function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Keyboard neighbors for mistyping effect
 const keyboardNeighbors = {
     'a': ['q', 'w', 's', 'z'],
     'b': ['v', 'g', 'h', 'n'],
@@ -49,11 +59,13 @@ const keyboardNeighbors = {
     'z': ['a', 's', 'x']
 };
 
+// Get a neighboring key for mistyping effect
 function getNeighboringKey(char) {
     const neighbors = keyboardNeighbors[char.toLowerCase()];
     return neighbors ? getRandomElement(neighbors) : char;
 }
 
+// Typewriter effect with mistyping
 async function typeWriterEffect(element, text, speed) {
     element.innerHTML = '';
     let cursor = document.createElement('span');
@@ -67,14 +79,14 @@ async function typeWriterEffect(element, text, speed) {
         let char = text[i];
         word += char;
 
-        if (Math.random() < 0.25 && char !== ' ' && char !== '\n') {
+        if (Math.random() < MISTYPE_PROBABILITY && char !== ' ' && char !== '\n') {
             // Mistype a letter with a neighboring key
             let wrongChar = getNeighboringKey(char);
             mistypedSpan = document.createElement('span');
             mistypedSpan.className = 'mistyped';
             mistypedSpan.textContent = word.slice(0, -1) + wrongChar;
             cursor.insertAdjacentElement('beforebegin', mistypedSpan);
-            await sleep(250); // Pause on mistype
+            await sleep(MISTYPE_PAUSE); // Pause on mistype
             // Backspace
             mistypedSpan.remove();
             await sleep(speed);
@@ -90,6 +102,7 @@ async function typeWriterEffect(element, text, speed) {
     }
 }
 
+// Backspace effect
 async function backspaceEffect(element, speed) {
     let text = element.innerText;
     while (text.length > 0) {
@@ -99,10 +112,11 @@ async function backspaceEffect(element, speed) {
     }
 }
 
+// Generate a haiku and display it with typewriter effect
 async function generateHaiku() {
     const haikuElement = document.getElementById('haiku');
     if (haikuElement.innerText.trim() !== '') {
-        await backspaceEffect(haikuElement, 2000 / 30); // Backspace existing poem
+        await backspaceEffect(haikuElement, BACKSPACE_SPEED); // Backspace existing poem
     }
 
     const haikuLines = await fetchHaikuLines();
@@ -119,7 +133,7 @@ async function generateHaiku() {
     const line3 = getRandomElement(fiveSyllablePhrases);
 
     const haiku = `${line1}\n${line2}\n${line3}`;
-    await typeWriterEffect(haikuElement, haiku, 2000 / 30); // 30 words per minute
+    await typeWriterEffect(haikuElement, haiku, TYPING_SPEED); // Use configurable typing speed
 }
 
 // Add event listener to generate haiku on button click
